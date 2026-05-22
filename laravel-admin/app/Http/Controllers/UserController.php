@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -10,7 +12,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        return User::all();
+        return User::paginate();
     }
 
     public function show($id)
@@ -18,26 +20,18 @@ class UserController extends Controller
         return User::find($id);
     }
 
-    public function store(Request $request)
+    public function store(UserCreateRequest $request)
     {
-        $user = User::create([
-            'first_name'=>$request->first_name,
-            'last_name'=>$request->last_name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
+        $user = User::create($request->only('first_name','last_name','email')+[
+            'password'=>Hash::make(1234),
         ]);
         return response($user, 201);
     }
 
-    public function update(Request $request,$id)
+    public function update(UserUpdateRequest $request,$id)
     {
         $user = User::find($id);
-        $user = $user->update([
-            'first_name'=>$request->first_name,
-            'last_name'=>$request->last_name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
-        ]);
+        $user->update($request->only('first_name','last_name','email'));
         return response($user, 202);
     }
 

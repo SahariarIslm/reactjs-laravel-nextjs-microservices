@@ -1,0 +1,5 @@
+# Ignore Docker database storage
+laravel-admin/.dbdata/
+
+# Ignore local environment files
+laravel-admin/.env

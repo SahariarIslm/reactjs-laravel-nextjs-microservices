@@ -35,3 +35,18 @@ services:
             - .dbdata:/var/lib/mysql
         ports:
             - 33066:3306
+
+    phpmyadmin:
+        container_name: admin_pma
+        image: phpmyadmin:latest
+        ports:
+            - "8080:80"
+        environment:
+            - PMA_HOST=db
+            - PMA_PORT=3306
+            - PMA_USER=root
+            - PMA_PASSWORD=root
+        depends_on:
+            - db
+volumes:
+    mysql_data:

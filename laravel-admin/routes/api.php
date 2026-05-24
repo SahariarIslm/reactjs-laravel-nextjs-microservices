@@ -7,6 +7,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PermissionController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register',[AuthController::class, 'register']);
@@ -22,6 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('roles', RoleController::class);
     Route::apiResource('products', ProductController::class);
     Route::apiResource('orders', OrderController::class)->only('index','show');
+    Route::apiResource('permissions', PermissionController::class)->only('index');
 });
 
 

@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,9 +13,24 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
+    ->withMiddleware(function (Middleware $middleware) {
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+
+        // Pass the global backslash \Throwable directly into the closure
+        $exceptions->render(function (\Throwable $exception, Request $request) {
+
+            if ($request->is('api/*') || $request->expectsJson()) {
+
+                $statusCode = method_exists($exception, 'getStatusCode')
+                    ? $exception->getStatusCode()
+                    : ($exception->getCode() ?: 400);
+
+                return response()->json([
+                    'error' => $exception->getMessage(),
+                ], $statusCode);
+            }
+        });
+
     })->create();

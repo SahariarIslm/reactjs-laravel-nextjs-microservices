@@ -69,6 +69,7 @@ class UserController extends Controller
         $user->update($request->only('first_name','last_name','email'));
         return response(new UserResource($user), 202);
     }
+
     public function updatePassword(Request $request)
     {
         $user = Auth::user();

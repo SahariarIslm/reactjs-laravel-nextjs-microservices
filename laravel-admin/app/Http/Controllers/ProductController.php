@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Models\Product;
 use Illuminate\Support\Str;
 use App\Http\Requests\ProductCreateRequest;
+use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
 {

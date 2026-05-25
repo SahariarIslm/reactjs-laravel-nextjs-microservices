@@ -21,6 +21,7 @@ class OrderFactory extends Factory
             'first_name' => $this->faker->text(30),
             'last_name' => $this->faker->text(30),
             'email' => fake()->unique()->safeEmail(),
+            'created_at' => $this->faker->dateTime(),
         ];
     }
 }

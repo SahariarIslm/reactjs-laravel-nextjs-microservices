@@ -19,18 +19,18 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
 
         // Pass the global backslash \Throwable directly into the closure
-        $exceptions->render(function (\Throwable $exception, Request $request) {
+        // $exceptions->render(function (\Throwable $exception, Request $request) {
 
-            if ($request->is('api/*') || $request->expectsJson()) {
+        //     if ($request->is('api/*') || $request->expectsJson()) {
 
-                $statusCode = method_exists($exception, 'getStatusCode')
-                    ? $exception->getStatusCode()
-                    : ($exception->getCode() ?: 400);
+        //         $statusCode = method_exists($exception, 'getStatusCode')
+        //             ? $exception->getStatusCode()
+        //             : ($exception->getCode() ?: 400);
 
-                return response()->json([
-                    'error' => $exception->getMessage(),
-                ], $statusCode);
-            }
-        });
+        //         return response()->json([
+        //             'error' => $exception->getMessage(),
+        //         ], $statusCode);
+        //     }
+        // });
 
     })->create();

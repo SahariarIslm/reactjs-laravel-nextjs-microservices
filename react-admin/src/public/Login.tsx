@@ -33,7 +33,9 @@ class Login extends Component{
             email: this.email,
             password: this.password,
         });
-        localStorage.setItem('token',response.data.access_token)
+        localStorage.setItem('token',response.data.access_token);
+        axios.defaults.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+
         this.setState({
             redirect : true
         })

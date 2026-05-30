@@ -31,15 +31,15 @@ export default class Wrapper extends Component<WrapperProps> {
     };
     return (
         <>
-            <Nav /> 
-            <div className="container-fluid"> 
-                <div className="row"> 
-                <Menu /> 
-                <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4"> 
-                    {this.props.children}
-                </main> 
-                </div> 
-            </div>
+          <Nav /> 
+          <div className="container-fluid"> 
+              <div className="row"> 
+              <Menu /> 
+              <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4"> 
+                  {this.props.children}
+              </main> 
+              </div> 
+          </div>
         </>
     )
   }

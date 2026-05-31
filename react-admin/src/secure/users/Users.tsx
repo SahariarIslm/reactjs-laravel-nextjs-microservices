@@ -72,7 +72,9 @@ class Users extends Component{
                               <td>{user.email}</td> 
                               <td>{user.role.name}</td> 
                               <td>
-                                <a href='#' className='btn btn-sm btn-outline-secondary'>Edit</a>
+                                <Link to={`/users/${user.id}/edit`} className='btn btn-sm btn-outline-secondary'>
+                                  Edit
+                                </Link>
                                 <a href='#' className='btn btn-sm btn-outline-secondary' 
                                   onClick={() => this.delete(user.id)}
                                 >

@@ -5,7 +5,23 @@ import Users from './secure/users/Users';
 import Login from './public/Login';
 import Register from './public/Register';
 import UserCreate from './secure/users/UserCreate';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import UserEdit from './secure/users/UserEdit';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
+
+
+const UserEditWrapper = () => {
+  const { id } = useParams<{ id: string }>();
+  return (
+    <UserEdit 
+      match={{
+        params: {
+          id: Number(id) // Converted to a number to match your UserEditProps interface
+        }
+      }} 
+    />
+  );
+};
+
 
 function App() {
   return (
@@ -17,6 +33,7 @@ function App() {
           <Route path={'/register'} Component={Register} />
           <Route path={'/users'} Component={Users} />
           <Route path={'/users/create'} Component={UserCreate} />
+          <Route path={'/users/:id/edit'} element={<UserEditWrapper />} />
         </Routes>
       </BrowserRouter>   
     </div>

@@ -8,6 +8,8 @@ import UserCreate from './secure/users/UserCreate';
 import UserEdit from './secure/users/UserEdit';
 import Roles from './secure/roles/Roles';
 import RoleCreate from './secure/roles/RoleCreate';
+import RoleEdit from './secure/roles/RoleEdit';
+import Products from './secure/products/Products';
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 
 
@@ -17,7 +19,20 @@ const UserEditWrapper = () => {
     <UserEdit 
       match={{
         params: {
-          id: Number(id) // Converted to a number to match your UserEditProps interface
+          id: Number(id) 
+        }
+      }} 
+    />
+  );
+};
+
+const RoleEditWrapper = () => {
+  const { id } = useParams<{ id: string }>();
+  return (
+    <RoleEdit 
+      match={{
+        params: {
+          id: Number(id) 
         }
       }} 
     />
@@ -38,6 +53,8 @@ function App() {
           <Route path={'/users/:id/edit'} element={<UserEditWrapper />} />
           <Route path={'/roles'} Component={Roles} />
           <Route path={'/roles/create'} Component={RoleCreate} />
+          <Route path={'/roles/:id/edit'} element={<RoleEditWrapper />} />
+          <Route path={'/products'} Component={Products} />
         </Routes>
       </BrowserRouter>   
     </div>

@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Support\Str;
 use App\Http\Requests\ProductCreateRequest;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Resources\ProductResource;
 
 class ProductController extends Controller
 {

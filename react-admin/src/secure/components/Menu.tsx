@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 
 const Menu = () => {
   return (
@@ -15,14 +16,18 @@ const Menu = () => {
                 <button type="button" className="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Close"></button> 
             </div> 
             <div className="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto"> 
-            <ul className="nav flex-column"> 
-                <li className="nav-item"> 
-                    <a className="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#"> 
-                        <svg className="bi" aria-hidden="true"><use xlinkHref="#house-fill"></use></svg>
-                        Dashboard
-                    </a> 
-                </li> 
-            </ul> 
+                <ul className="nav flex-column"> 
+                    <li className="nav-item"> 
+                        <NavLink to={'/'} className="nav-link d-flex align-items-center gap-2"> 
+                            Dashboard
+                        </NavLink> 
+                    </li> 
+                    <li className="nav-item"> 
+                        <NavLink to={'/users'} className="nav-link d-flex align-items-center gap-2"> 
+                            Users
+                        </NavLink> 
+                    </li>
+                </ul> 
             </div>
         </div>
     </div> 

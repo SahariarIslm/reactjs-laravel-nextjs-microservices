@@ -6,6 +6,8 @@ import Login from './public/Login';
 import Register from './public/Register';
 import UserCreate from './secure/users/UserCreate';
 import UserEdit from './secure/users/UserEdit';
+import Roles from './secure/roles/Roles';
+import RoleCreate from './secure/roles/RoleCreate';
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 
 
@@ -34,6 +36,8 @@ function App() {
           <Route path={'/users'} Component={Users} />
           <Route path={'/users/create'} Component={UserCreate} />
           <Route path={'/users/:id/edit'} element={<UserEditWrapper />} />
+          <Route path={'/roles'} Component={Roles} />
+          <Route path={'/roles/create'} Component={RoleCreate} />
         </Routes>
       </BrowserRouter>   
     </div>

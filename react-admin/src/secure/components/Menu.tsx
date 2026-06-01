@@ -37,6 +37,11 @@ const Menu = () => {
                             Products
                         </NavLink>
                     </li>
+                    <li className="nav-item">
+                        <NavLink to={'/orders'} className="nav-link d-flex align-items-center gap-2">
+                            Orders
+                        </NavLink>
+                    </li>
                 </ul>
             </div>
         </div>

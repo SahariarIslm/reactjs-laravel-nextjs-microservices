@@ -13,6 +13,7 @@ import ProductEdit from './secure/products/ProductEdit';
 import Products from './secure/products/Products';
 import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import ProductCreate from './secure/products/ProductCreate';
+import Orders from './secure/orders/Orders';
 
 const UserEditWrapper = () => {
   const { id } = useParams<{ id: string }>();
@@ -70,6 +71,7 @@ function App() {
           <Route path={'/products'} Component={Products} />
           <Route path={'/products/create'} Component={ProductCreate} />
           <Route path={'/products/:id/edit'} element={<ProductEditWrapper />} />
+          <Route path={'/orders'} Component={Orders} />
         </Routes>
       </BrowserRouter>   
     </div>

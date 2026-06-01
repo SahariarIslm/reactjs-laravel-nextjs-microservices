@@ -15,6 +15,7 @@ import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import ProductCreate from './secure/products/ProductCreate';
 import Orders from './secure/orders/Orders';
 import OrderItems from './secure/orders/OrderItems';
+import Profile from './secure/profile/Profile';
 
 const UserEditWrapper = () => {
   const { id } = useParams<{ id: string }>();
@@ -86,6 +87,7 @@ function App() {
           <Route path={'/products/:id/edit'} element={<ProductEditWrapper />} />
           <Route path={'/orders'} Component={Orders} />
           <Route path={'/orders/:id'} element={<OrderItemsWrapper />} />
+          <Route path={'/profile'} Component={Profile} />
         </Routes>
       </BrowserRouter>   
     </div>

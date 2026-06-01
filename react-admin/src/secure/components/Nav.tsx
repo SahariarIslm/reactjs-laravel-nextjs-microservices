@@ -1,9 +1,20 @@
 import React, {Component} from 'react'
-import { Navigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
+import axios from 'axios';
+import { User } from '../../classes/user';
 
 class Nav extends Component{
   state = {
+    user: new User(),
     redirect: false
+  }
+
+  componentDidMount = async () => {
+    const response = await axios.get('user');
+
+    this.setState({
+      user: response.data.data
+    })
   }
   handleClick = () => {
     localStorage.clear();
@@ -18,14 +29,14 @@ class Nav extends Component{
     return (
       <header className="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
         <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Company name</a>
+        
         <ul className="navbar-nav flex-row">
-          <li className="nav-item text-nowrap">
+            <Link to={'/profile'} className="nav-link px-3 text-white">{this.state.user.first_name} {this.state.user.last_name}</Link>
             <button className="nav-link px-3 text-white" type="button" onClick={this.handleClick}>
               Sign Out
             </button>
-          </li>
-          
         </ul>
+        
         <div id="navbarSearch" className="navbar-search w-100 collapse">
           <input className="form-control w-100 rounded-0 border-0" type="text" placeholder="Search" aria-label="Search" />
         </div>

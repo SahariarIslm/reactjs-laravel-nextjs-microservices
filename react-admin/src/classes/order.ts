@@ -1,12 +1,14 @@
+import { OrderItem } from "./order_item";
+
 export class Order {
     id: number;
     first_name: string;
     last_name: string;
     email: string;
     total: number;
-    order_items: any[];
+    order_items: OrderItem[];
 
-    constructor(id: number, first_name: string, last_name: string, email: string, total: number, order_items: any[]) {
+    constructor(id: number, first_name: string, last_name: string, email: string, total: number, order_items: OrderItem[]) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;

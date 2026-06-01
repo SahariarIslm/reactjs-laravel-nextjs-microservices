@@ -14,24 +14,19 @@ export default class Orders extends Component {
     }
     componentDidMount = async () => {
         const response = await axios.get(`orders?page=${this.page}`);
-        this.setState({ 
+        this.setState({
             orders: response.data.data 
         });
         this.last_page = response.data.meta.last_page
     }
     handlePageChange = async (page: number) => {
-    this.page = page;
-    await this.componentDidMount();
-  }
+        this.page = page;
+        await this.componentDidMount();
+    }
     
     render() {
         return (
             <Wrapper>
-                <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 ob-2 mb-3 border-bottom">
-                    <div className='btn-toolbar mb-2 mb-md-0'>
-                    <Link to={'/users/create'} className='btn btn-sm btn-outline-secondary'>Add</Link>
-                    </div>
-                </div>
                 <div className="table-responsive small"> 
                     <table className="table table-striped table-sm"> 
                         <thead> 

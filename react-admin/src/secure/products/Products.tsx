@@ -3,25 +3,35 @@ import Wrapper from '../Wrapper'
 import axios from 'axios'
 import { Link } from 'react-router-dom';
 import { Product } from '../../classes/product'
+import Paginator from '../components/Paginator'
+import Deleter from '../components/Deleter';
 
-export default class Products extends Component {
+export default class Products extends Component{
     state = {
         products: []
     }
-    componentDidMount = async() => {
-        const response = await axios.get('products')
+    page = 1;
+    last_page = 0;
+    
+    componentDidMount = async () => {
+        const response = await axios.get(`products?page=${this.page}`);
         this.setState({
             products: response.data.data
+        });
+        this.last_page = response.data.meta.last_page
+    }
+    
+    handleDelete = async(id: number) => {
+        this.setState({
+            products: this.state.products.filter((r:Product) => r.id !== id)
         })
     }
-    delete = async(id: number) => {
-        if(window.confirm('Are you sure you want to delete this record?')){
-            await axios.delete(`products/${id}`);
-            this.setState({
-                products: this.state.products.filter((r:Product) => r.id !== id)
-            })
-        }
+
+    handlePageChange = async (page: number) => {
+        this.page = page;
+        await this.componentDidMount();
     }
+
     render() {
             return (
                 <Wrapper>
@@ -48,7 +58,7 @@ export default class Products extends Component {
                                         return (
                                             <tr key={product.id}>
                                                 <td>{product.id}</td>
-                                                <td><img src={product.image} width="50" /></td>
+                                                <td><img src={product.image} alt='' width="50" /></td>
                                                 <td>{product.title}</td>
                                                 <td>{product.description}</td>
                                                 <td>{product.price}</td>
@@ -56,11 +66,7 @@ export default class Products extends Component {
                                                     <Link to={`/products/${product.id}/edit`} className='btn btn-sm btn-outline-secondary'>
                                                         Edit
                                                     </Link>
-                                                    <a href='#' className='btn btn-sm btn-outline-secondary' 
-                                                        onClick={() => this.delete(product.id)}
-                                                    >
-                                                        Delete
-                                                    </a>
+                                                    <Deleter id={product.id} endpoint='products' handleDelete={this.handleDelete} />
                                                 </td>
                                             </tr>
                                         )
@@ -69,6 +75,7 @@ export default class Products extends Component {
                             </tbody> 
                         </table> 
                     </div>
+                    <Paginator lastPage={this.last_page} handlePageChange={this.handlePageChange}    />
                 </Wrapper>
             )
     }

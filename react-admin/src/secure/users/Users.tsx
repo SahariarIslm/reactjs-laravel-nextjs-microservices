@@ -3,44 +3,31 @@ import Wrapper from '../Wrapper';
 import axios from 'axios';
 import {User} from '../../classes/user';
 import { Link } from 'react-router-dom';
+import Paginator from '../components/Paginator'
+import Deleter from '../components/Deleter';
 class Users extends Component{
   state = {
     users: []
   }
   page = 1;
   last_page = 0;
-  fetchUsers = async () => {
+  componentDidMount = async () => {
     const response = await axios.get(`users?page=${this.page}`);
     this.setState({
       users: response.data.data
     });
     this.last_page = response.data.meta.last_page
   }
-  componentDidMount = async () => {
-    await this.fetchUsers();
+
+  handlePageChange = async (page: number) => {
+    this.page = page;
+    await this.componentDidMount();
   }
 
-  prev = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    if(this.page === 1) return;
-    this.page--;
-    await this.fetchUsers();
-  }
-
-  next = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    if(this.page === this.last_page) return;
-    this.page++;
-    await this.fetchUsers();
-  }
-
-  delete = async(id: number) => {
-    if(window.confirm('Are you sure you want to delete this record?')){
-      await axios.delete(`users/${id}`);
-      this.setState({
+  handleDelete = async(id: number) => {
+    this.setState({
         users: this.state.users.filter((u:User) => u.id !== id)
-      })
-    }
+    })
   }
 
   render() {
@@ -75,11 +62,7 @@ class Users extends Component{
                                 <Link to={`/users/${user.id}/edit`} className='btn btn-sm btn-outline-secondary'>
                                   Edit
                                 </Link>
-                                <a href='#' className='btn btn-sm btn-outline-secondary' 
-                                  onClick={() => this.delete(user.id)}
-                                >
-                                  Delete
-                                </a>
+                                <Deleter id={user.id} endpoint='users' handleDelete={this.handleDelete} />
                               </td> 
                             </tr> 
                           )
@@ -90,16 +73,7 @@ class Users extends Component{
                   </tbody> 
               </table> 
           </div> 
-          <nav>
-            <ul className='pagination'>
-              <li className='page-item'>
-                <a href="" className='page-link'  onClick={this.prev}>Previous</a>
-              </li>
-              <li className='page-item'>
-                <a href="#" className='page-link' onClick={this.next}>Next</a>
-              </li>
-            </ul>
-          </nav>
+          <Paginator lastPage={this.last_page} handlePageChange={this.handlePageChange}    />
       </Wrapper>
     )
   }

@@ -2,16 +2,19 @@ import React, {Component} from 'react'
 import { Link, Navigate } from 'react-router-dom';
 import { User } from '../../classes/user';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 class Nav extends Component<{user: User}> {
   state = {
     redirect: false
   }
-  handleClick = () => {
-    localStorage.clear();
-    this.setState({
-      redirect:true
-    })
+  handleClick = async () => {
+    await axios.post('logout', {});
+    
+    // Clear the token
+    delete axios.defaults.headers.common['Authorization'];
+    
+    this.setState({ redirect: true })
   }
   render() {
     if(this.state.redirect){

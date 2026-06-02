@@ -16,7 +16,7 @@ class Authenticate
     public function handle(Request $request, Closure $next, ...$guards): Response
     {
         if($jwt = $request->cookie('jwt')){
-            $request->headers->set('Authorization', 'Bearer ', $jwt);
+            $request->headers->set('Authorization', 'Bearer ' . $jwt);
         }
 
         $this->authenticate($request, $guards);

@@ -27,7 +27,7 @@ class AuthController extends Controller
         // 60 minutes = 1 hour.
         // Added 'httpOnly' as true and 'secure' as true for security.
         // $cookie = cookie('jwt', $token, 60, null, null, true, true);
-        $cookie = cookie('jwt', $token);
+        $cookie = cookie('jwt', $token, 60, '/', null, false, true);  // Added path, domain, SameSite params
 
         return response()->json([
             'access_token' => $token,

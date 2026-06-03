@@ -1,23 +1,31 @@
 <?php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ImageController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ImageController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Influencer\ProduactController;
 
+// Common
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register',[AuthController::class, 'register']);
 
+Route::group([
+    'middleware'=>'auth:sanctum',
+], function(){
+    Route::get('user', [AuthController::class,'user']);
+    Route::put('user/info', [AuthController::class,'updateInfo']);
+    Route::put('user/password', [AuthController::class,'updatePassword']);
+});
+
+// Admin
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('user', [UserController::class,'user']);
-    Route::put('user/info', [UserController::class,'updateInfo']);
-    Route::put('user/password', [UserController::class,'updatePassword']);
     Route::post('upload', [ImageController::class,'upload']);
     Route::get('export', [OrderController::class,'export']);
     Route::get('chart', [DashboardController::class,'chart']);
@@ -29,4 +37,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::apiResource('permissions', PermissionController::class)->only('index');
 });
 
-
+// Influencer
+Route::group([
+    'prefix'=>'influencer',
+], function(){
+    Route::get('/products', [ProduactController::class,'index']);
+});

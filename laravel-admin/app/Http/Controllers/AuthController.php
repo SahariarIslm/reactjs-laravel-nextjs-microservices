@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
@@ -48,7 +49,39 @@ class AuthController extends Controller
         $user = User::create($request->only('first_name','last_name','email')+[
             'role_id'=>3,
             'password'=>Hash::make($request->input('password')),
+            'is_influencer' => 1
         ]);
         return response($user, 201);
     }
+
+    public function user()
+    {
+        $user = Auth::user();
+        $resource = new UserResource($user);
+        if($user->isInfluencer()){
+            return $resource;
+        }
+        return $resource->additional([
+            'data'=>[
+                'permissions' => $user->permissions()
+            ]
+        ]);
+    }
+
+    public function updateInfo(UpdateInfoRequest $request)
+    {
+        $user = Auth::user();
+        $user->update($request->only('first_name','last_name','email'));
+        return response(new UserResource($user), 202);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+        $user->update([
+            'password' => Hash::make($request->input('password'))
+        ]);
+        return response(new UserResource($user), 202);
+    }
+
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Influencer\ProduactController;
+use App\Http\Controllers\Influencer\LinkController;
 
 // Common
 Route::post('login', [AuthController::class, 'login']);
@@ -40,7 +41,12 @@ Route::middleware(['auth:sanctum','ability:admin'])->prefix('admin')->group(func
 // Influencer
 Route::group([
     'prefix'=>'influencer',
-    'middleware' => ['auth:sanctum','ability:influencer']
 ], function(){
-    Route::get('/products', [ProduactController::class,'index']);
+    Route::get('/products', );
+
+    Route::group([
+        'middleware' => ['auth:sanctum','ability:influencer']
+    ],function(){
+        Route::post('links',[LinkController::class,'store']);
+    });
 });

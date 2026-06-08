@@ -24,7 +24,7 @@ Route::group([
 });
 
 // Admin
-Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum','ability:admin'])->prefix('admin')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('upload', [ImageController::class,'upload']);
     Route::get('export', [OrderController::class,'export']);
@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 // Influencer
 Route::group([
     'prefix'=>'influencer',
+    'middleware' => ['auth:sanctum','ability:influencer']
 ], function(){
     Route::get('/products', [ProduactController::class,'index']);
 });

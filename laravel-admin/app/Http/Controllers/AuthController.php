@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -23,11 +22,18 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-        $token = $user->createToken('auth_token')->plainTextToken;
-        // 60 minutes = 1 hour.
-        // Added 'httpOnly' as true and 'secure' as true for security.
-        // $cookie = cookie('jwt', $token, 60, null, null, true, true);
-        $cookie = cookie('jwt', $token, 60, '/', null, false, true);  // Added path, domain, SameSite params
+
+        $token = '';
+        if ($user->role->name === "Admin") {
+            $abilities = ['admin'];
+        } else {
+            $abilities = ['influencer'];
+        }
+        $token = $user->createToken('auth_token', $abilities)->plainTextToken;
+
+
+
+        $cookie = cookie('jwt', $token, 60, '/', null, false, true);
 
         return response()->json([
             'access_token' => $token,
@@ -83,5 +89,4 @@ class AuthController extends Controller
         ]);
         return response(new UserResource($user), 202);
     }
-
 }

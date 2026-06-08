@@ -4,7 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-
+use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -14,23 +15,40 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+
+        $middleware->alias([
+            'abilities' => \Laravel\Sanctum\Http\Middleware\CheckAbilities::class,
+            'ability'   => \Laravel\Sanctum\Http\Middleware\CheckForAnyAbility::class,
+        ]);
+
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (Exceptions $exceptions) {
 
-        // Pass the global backslash \Throwable directly into the closure
-        // $exceptions->render(function (\Throwable $exception, Request $request) {
+        // Unauthenticated
+        $exceptions->render(function (
+            AuthenticationException $e,
+            Request $request
+        ) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthenticated. Please login first.',
+                ], 401);
+            }
+        });
 
-        //     if ($request->is('api/*') || $request->expectsJson()) {
+        // Forbidden / Invalid ability
+        $exceptions->render(function (
+            AccessDeniedHttpException $e,
+            Request $request
+        ) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You do not have permission to access this resource.',
+                ], 403);
+            }
+        });
 
-        //         $statusCode = method_exists($exception, 'getStatusCode')
-        //             ? $exception->getStatusCode()
-        //             : ($exception->getCode() ?: 400);
-
-        //         return response()->json([
-        //             'error' => $exception->getMessage(),
-        //         ], $statusCode);
-        //     }
-        // });
-
-    })->create();
+    })
+    ->create();

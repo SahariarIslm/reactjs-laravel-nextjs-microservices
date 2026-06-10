@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Influencer\ProduactController;
 use App\Http\Controllers\Influencer\LinkController;
+use App\Http\Controllers\Influencer\StatsController;
 
 
 // Common
@@ -48,7 +49,8 @@ Route::group([
     Route::group([
         'middleware' => ['auth:sanctum','ability:influencer']
     ],function(){
-        Route::post('links',[LinkController::class,'store']);
+        Route::post('links', [LinkController::class,'store']);
+        Route::get('stats', [StatsController::class,'index']);
     });
 });
 

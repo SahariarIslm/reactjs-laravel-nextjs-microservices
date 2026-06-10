@@ -46,5 +46,12 @@ services:
             - PMA_PASSWORD=root
         depends_on:
             - db
+
+    mailpit:
+        image: axllent/mailpit
+        container_name: laravel_mailpit
+        ports:
+            - "1025:1025"
+            - "8025:8025"
 volumes:
     mysql_data:

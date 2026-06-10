@@ -47,6 +47,8 @@ use App\Models\OrderItem;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereZip($value)
  * @property string|null $transection_id
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereTransectionId($value)
+ * @property-read mixed $admin_total
+ * @property-read mixed $influencer_total
  * @mixin \Eloquent
  */
 class Order extends Model

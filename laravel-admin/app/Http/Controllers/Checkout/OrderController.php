@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Link;
 use App\Models\OrderItem;
 use Illuminate\Mail\Message;
+use App\Events\OrderCompletedEvent;
 
 class OrderController
 {
@@ -76,8 +77,6 @@ class OrderController
 
     public function confirm(Request $request)
     {
-
-
         if(!$order = Order::whereTransectionId($request->input('source'))->first()){
             return response([
                 'error' => 'Order Not Found'
@@ -87,15 +86,7 @@ class OrderController
         $order->complete = 1;
         $order->save();
 
-        \Mail::send('admin',['order'=>$order], function(Message $message){
-            $message->to('admin@abc.com');
-            $message->subject('A new order has been completed!');
-        });
-
-        \Mail::send('influencer',['order'=>$order], function(Message $message) use ($order) {
-            $message->to($order->influencer_email);
-            $message->subject('A new order has been completed!');
-        });
+        event(new OrderCompletedEvent($order));
 
         return response([
             'message' => 'success'

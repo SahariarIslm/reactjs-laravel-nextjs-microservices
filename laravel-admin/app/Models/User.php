@@ -22,8 +22,13 @@ use App\Models\UserRole;
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $is_influencer
+ * @property-read bool $revenue
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read \App\Models\Role|null $role
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -33,17 +38,11 @@ use App\Models\UserRole;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereFirstName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereIsInfluencer($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLastName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
- * @property-read int|null $tokens_count
- * @property int $role_id
- * @property-read \App\Models\Role $role
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRoleId($value)
- * @property int $is_influencer
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereIsInfluencer($value)
  * @mixin \Eloquent
  */
 #[Fillable(['first_name', 'last_name', 'email', 'password','role_id','is_influencer'])]
@@ -89,5 +88,14 @@ class User extends Authenticatable
     public function isInfluencer(): bool
     {
         return $this->is_influencer ===1;
+    }
+
+    public function getRevenueAttribute()
+    {
+        $orders = Order::Where('user_id',$this->id)->where('complete',1)->get();
+
+        return $orders->sum(function(Order $order){
+            return $order->influencer_total;
+        });
     }
 }

@@ -45,6 +45,8 @@ use App\Models\OrderItem;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereInfluencerEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereZip($value)
+ * @property string|null $transection_id
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereTransectionId($value)
  * @mixin \Eloquent
  */
 class Order extends Model

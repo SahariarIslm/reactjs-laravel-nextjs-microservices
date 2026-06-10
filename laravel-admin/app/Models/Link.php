@@ -18,9 +18,22 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Link whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Link whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Link whereUserId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
+ * @property-read \App\Models\User $user
  * @mixin \Eloquent
  */
 class Link extends Model
 {
     protected $guarded = ['id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, LinkProduct::class);
+    }
 }

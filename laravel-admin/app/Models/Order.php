@@ -27,6 +27,24 @@ use App\Models\OrderItem;
  * @property-read int|null $order_items_count
  * @method static \Database\Factories\OrderFactory factory($count = null, $state = [])
  * @property-read mixed $name
+ * @property string $code
+ * @property int $user_id
+ * @property string $influencer_email
+ * @property string|null $address
+ * @property string|null $address2
+ * @property string|null $city
+ * @property string|null $country
+ * @property string|null $zip
+ * @property int $complete
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereAddress2($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereComplete($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereInfluencerEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereZip($value)
  * @mixin \Eloquent
  */
 class Order extends Model

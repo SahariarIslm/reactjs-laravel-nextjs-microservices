@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Influencer\ProduactController;
 use App\Http\Controllers\Influencer\LinkController;
 
+
 // Common
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register',[AuthController::class, 'register']);
@@ -49,4 +50,13 @@ Route::group([
     ],function(){
         Route::post('links',[LinkController::class,'store']);
     });
+});
+
+
+// Checkout Routes
+Route::group([
+    'prefix'=>'checkout',
+], function(){
+    Route::get('links/{code}',[\App\Http\Controllers\Checkout\LinkController::class,'show']);
+    Route::post('orders',[\App\Http\Controllers\Checkout\OrderController::class,'store']);
 });

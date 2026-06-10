@@ -43,6 +43,7 @@ use App\Models\UserRole;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @property-read mixed $full_name
  * @mixin \Eloquent
  */
 #[Fillable(['first_name', 'last_name', 'email', 'password','role_id','is_influencer'])]
@@ -97,5 +98,10 @@ class User extends Authenticatable
         return $orders->sum(function(Order $order){
             return $order->influencer_total;
         });
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->first_name.' '.$this->last_name;
     }
 }

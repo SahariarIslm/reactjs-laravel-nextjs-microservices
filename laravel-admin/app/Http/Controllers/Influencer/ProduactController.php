@@ -10,12 +10,26 @@ class ProduactController
 {
     public function index(Request $request)
     {
+        $s = $request->input('s');
+        $cacheKey = 'products' . ($s ? '_' . md5($s) : '');
 
-        $query = Product::query();
-        if($s = $request->input('s')){
-            $query->whereRaw("title LIKE '%{$s}%'")
-                ->orWhereRaw("description LIKE '%{$s}%'");
-        }
-        return ProductResource::collection($query->get());
+        $products = \Cache::remember($cacheKey, 5, function () use ($s) {
+            $query = Product::query();
+
+            if ($s) {
+                $query->where(function ($q) use ($s) {
+                    $q->whereRaw("title LIKE ?", ["%{$s}%"])
+                      ->orWhereRaw("description LIKE ?", ["%{$s}%"]);
+                });
+            }
+
+            // cache raw array, NOT the Resource object
+            return $query->get()->toArray();
+        });
+
+        // wrap in resource AFTER retrieving from cache
+        return ProductResource::collection(
+            collect($products)->map(fn($p) => (object) $p)
+        );
     }
 }

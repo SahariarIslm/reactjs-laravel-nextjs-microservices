@@ -5,7 +5,11 @@ RUN apt-get update -y && apt-get install -y \
     zip \
     unzip \
     git \
-    libonig-dev
+    libonig-dev \
+    libssl-dev \
+    zlib1g-dev
+
+RUN pecl install redis && docker-php-ext-enable redis
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

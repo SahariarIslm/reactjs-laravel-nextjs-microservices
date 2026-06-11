@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum','ability:admin'])->prefix('admin')->group(func
 Route::group([
     'prefix'=>'influencer',
 ], function(){
-    Route::get('/products', );
+    Route::get('/products', [\App\Http\Controllers\Influencer\ProduactController::class,'index']);
 
     Route::group([
         'middleware' => ['auth:sanctum','ability:influencer']

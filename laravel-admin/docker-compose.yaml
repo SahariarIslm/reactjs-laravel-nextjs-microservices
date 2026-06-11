@@ -17,12 +17,14 @@ services:
             - DB_DATABASE=influencer
             - DB_USERNAME=root
             - DB_PASSWORD=root
+            - REDIS_HOST=redis
         ports:
             - 8000:8000
         volumes:
             - .:/app
         depends_on:
             - db
+            - redis
 
     db:
         image: mysql:9.7.0
@@ -46,12 +48,15 @@ services:
             - PMA_PASSWORD=root
         depends_on:
             - db
-
     mailpit:
         image: axllent/mailpit
         container_name: laravel_mailpit
         ports:
             - "1025:1025"
             - "8025:8025"
+
+    redis:
+        image: redis:latest
+
 volumes:
     mysql_data:

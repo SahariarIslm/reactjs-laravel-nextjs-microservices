@@ -69,6 +69,7 @@ class Order extends Model
 
     public function getInfluencerTotalAttribute()
     {
+        usleep(30000);
         return $this->orderItems->sum(function(OrderItem $item){
             return $item->influencer_revenue;
         });

@@ -14,46 +14,52 @@ use App\Http\Controllers\Influencer\LinkController;
 use App\Http\Controllers\Influencer\StatsController;
 
 
-// Common
-Route::post('login', [AuthController::class, 'login']);
-Route::post('register',[AuthController::class, 'register']);
-
-Route::group([
-    'middleware'=>'auth:sanctum',
-], function(){
-    Route::get('user', [AuthController::class,'user']);
-    Route::put('user/info', [AuthController::class,'updateInfo']);
-    Route::put('user/password', [AuthController::class,'updatePassword']);
-});
 
 // Admin
-Route::middleware(['auth:sanctum','ability:admin'])->prefix('admin')->group(function () {
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::post('upload', [ImageController::class,'upload']);
-    Route::get('export', [OrderController::class,'export']);
-    Route::get('chart', [DashboardController::class,'chart']);
+Route::prefix('admin')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register',[AuthController::class, 'register']);
 
-    Route::apiResource('users', UserController::class);
-    Route::apiResource('roles', RoleController::class);
-    Route::apiResource('products', ProductController::class);
-    Route::apiResource('orders', OrderController::class)->only('index','show');
-    Route::apiResource('permissions', PermissionController::class)->only('index');
+    Route::group([
+        'middleware' => ['auth:sanctum','ability:admin']
+    ],function(){
+        Route::get('user', [AuthController::class,'user']);
+        Route::put('user/info', [AuthController::class,'updateInfo']);
+        Route::put('user/password', [AuthController::class,'updatePassword']);
+
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('upload', [ImageController::class,'upload']);
+        Route::get('export', [OrderController::class,'export']);
+        Route::get('chart', [DashboardController::class,'chart']);
+
+        Route::apiResource('users', UserController::class);
+        Route::apiResource('roles', RoleController::class);
+        Route::apiResource('products', ProductController::class);
+        Route::apiResource('orders', OrderController::class)->only('index','show');
+        Route::apiResource('permissions', PermissionController::class)->only('index');
+    });
 });
 
+
 // Influencer
-Route::group([
-    'prefix'=>'influencer',
-], function(){
-    Route::get('/products', [\App\Http\Controllers\Influencer\ProduactController::class,'index']);
+Route::prefix('influencer')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register',[AuthController::class, 'register']);
+    Route::get('products', [\App\Http\Controllers\Influencer\ProduactController::class,'index']);
 
     Route::group([
         'middleware' => ['auth:sanctum','ability:influencer']
     ],function(){
+        Route::get('user', [AuthController::class,'user']);
+        Route::put('user/info', [AuthController::class,'updateInfo']);
+        Route::put('user/password', [AuthController::class,'updatePassword']);
+
         Route::post('links', [LinkController::class,'store']);
         Route::get('stats', [StatsController::class,'index']);
         Route::get('rankings', [StatsController::class,'rankings']);
     });
 });
+
 
 
 // Checkout Routes

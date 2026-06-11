@@ -5,31 +5,28 @@ namespace App\Http\Controllers\Influencer;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Http\Resources\ProductResource;
+use Illuminate\Support\Str;
 
 class ProduactController
 {
     public function index(Request $request)
     {
-        $s = $request->input('s');
-        $cacheKey = 'products' . ($s ? '_' . md5($s) : '');
+        $products = \Cache::remember('products', 60 * 30, function () {
+            sleep(2);
 
-        $products = \Cache::remember($cacheKey, 5, function () use ($s) {
-            $query = Product::query();
-
-            if ($s) {
-                $query->where(function ($q) use ($s) {
-                    $q->whereRaw("title LIKE ?", ["%{$s}%"])
-                      ->orWhereRaw("description LIKE ?", ["%{$s}%"]);
-                });
-            }
-
-            // cache raw array, NOT the Resource object
-            return $query->get()->toArray();
+            return Product::all()->toArray();
         });
 
-        // wrap in resource AFTER retrieving from cache
-        return ProductResource::collection(
-            collect($products)->map(fn($p) => (object) $p)
-        );
+        // Convert arrays back to Product models
+        $products = Product::hydrate($products);
+
+        if ($s = $request->input('s')) {
+            $products = $products->filter(function (Product $product) use ($s) {
+                return Str::contains($product->title, $s, true) ||
+                    Str::contains($product->description, $s, true);
+            });
+        }
+
+        return ProductResource::collection($products);
     }
 }

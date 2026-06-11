@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use App\Http\Requests\ProductCreateRequest;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\ProductResource;
+use App\Events\ProductUpdatedEvent;
 
 class ProductController extends Controller
 {
@@ -32,6 +33,8 @@ class ProductController extends Controller
         Gate::authorize('edit','products');
 
         $product = Product::create($request->only('title','description','image','price'));
+
+        event(new ProductUpdatedEvent());
         return response($product, Response::HTTP_CREATED);
     }
 
@@ -41,6 +44,9 @@ class ProductController extends Controller
 
         $product = Product::find($id);
         $product->update($request->only('title','description','image','price'));
+
+        event(new ProductUpdatedEvent());
+
         return response($product, Response::HTTP_ACCEPTED);
     }
 

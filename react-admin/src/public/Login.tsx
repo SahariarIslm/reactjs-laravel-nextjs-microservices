@@ -32,6 +32,7 @@ class Login extends Component{
         const response = await axios.post('login', {
             email: this.email,
             password: this.password,
+            scope: 'admin'
         });
 
         // Store token in axios default header

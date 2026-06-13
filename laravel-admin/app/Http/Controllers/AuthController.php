@@ -24,7 +24,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         $token = '';
-        if ($user->role->name === "Admin") {
+        if ($request->input('scope') === "admin") {
             $abilities = ['admin'];
         } else {
             $abilities = ['influencer'];
@@ -53,7 +53,6 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $user = User::create($request->only('first_name','last_name','email')+[
-            'role_id'=>3,
             'password'=>Hash::make($request->input('password')),
             'is_influencer' => 1
         ]);

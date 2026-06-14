@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useEffect } from 'react';
 import Nav from '../components/Nav';
-import Header from '../components/Header';
+
 import axios from 'axios';
 import { User } from '../classes/user';
 import { connect } from 'react-redux';
@@ -33,12 +33,7 @@ const Wrapper = (props:PropsWithChildren<any>) => {
         <>
             <Nav />
             <main role="main">
-                <Header />
-                <div className="album py-5 bg-light">
-                    <div className="container">
-                        {props.children}
-                    </div>
-                </div>
+                {props.children}
             </main>
         </>
     );

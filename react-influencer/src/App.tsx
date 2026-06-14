@@ -3,6 +3,7 @@ import Main from './pages/Main';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './public/Login';
 import Register from './public/Register';
+import Rankings from './pages/Rankings';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route path='/' Component={Main} />
           <Route path='/login' Component={Login} />
           <Route path='/register' Component={Register} />
+          <Route path='/rankings' Component={Rankings} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -8,6 +8,7 @@ const Nav = (props: PropsWithRef<any>) => {
         menu = (
             <>
                 <nav className='my-2 my-md-0 mr-mb-3'>
+                    <Link to={'/rankings'} className='p-2 text-dark'>Rankings</Link>
                     <Link to={'/login'} onClick={() => localStorage.clear()} className='p-2 text-dark'>Logout</Link>
                     <Link to={'/profile'} className='btn btn-outline-primary'>{props.user.first_name}</Link>
                 </nav>

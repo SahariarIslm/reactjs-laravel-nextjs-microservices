@@ -13,7 +13,7 @@ const Rankings = () => {
                 setRankings(response.data)
             }
         )()
-    } )
+    }, [])
     return (
         <Wrapper>
             <div className="album py-5 bg-light">

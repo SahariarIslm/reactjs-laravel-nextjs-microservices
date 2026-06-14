@@ -10,16 +10,22 @@ const Wrapper = (props:PropsWithChildren<any>) => {
 
     useEffect(()=>{
         (async () => {
-            const response = await axios.get('user');
-            const user: User = response.data.data
+            try{
+                const response = await axios.get('user');
+                console.log(response);
+                const user: User = response.data.data
 
-            props.setUser(new User(
-                user.id,
-                user.first_name,
-                user.last_name,
-                user.email,
-                user.revenue,
-            ))
+                props.setUser(new User(
+                    user.id,
+                    user.first_name,
+                    user.last_name,
+                    user.email,
+                    user.revenue,
+                ))
+            }catch(e){
+                props.setUser(null)
+            }
+            
         })();
     },[])
 

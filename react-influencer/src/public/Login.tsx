@@ -29,16 +29,27 @@ class Login extends Component{
     submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        const response = await axios.post('login', {
-            email: this.email,
-            password: this.password,
-            scope: 'influencer'
-        });
+        try {
+            const response = await axios.post('/login', {
+                email: this.email,
+                password: this.password,
+                scope: 'influencer'
+            });
 
-        // Store token in axios default header
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
+            const token = response.data.access_token;
 
-        this.setState({ redirect: true })
+            // save token
+            localStorage.setItem('token', token);
+
+            // set axios auth header
+            axios.defaults.headers.common['Authorization'] =
+                `Bearer ${token}`;
+
+            this.setState({ redirect: true });
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     render(){

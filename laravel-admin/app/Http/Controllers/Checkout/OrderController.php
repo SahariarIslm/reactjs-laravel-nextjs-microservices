@@ -9,6 +9,7 @@ use App\Models\Link;
 use App\Models\OrderItem;
 use Illuminate\Mail\Message;
 use App\Events\OrderCompletedEvent;
+use Cartalyst\Stripe\Stripe;
 
 class OrderController
 {
@@ -60,7 +61,7 @@ class OrderController
         }
 
         $stripe = Stripe::make(env('STRIPE_SECRET'));
-        $source = $stripe->checkout()->sessioins()->create([
+        $source = $stripe->checkout()->sessions()->create([
             'payment_method_types' => ['card'],
             'line_items'=> $lineItems,
             'success_url' => env('CHECKOUT_URL').'/success?source={CHECKOUT_SESSION_ID}',

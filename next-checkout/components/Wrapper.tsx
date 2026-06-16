@@ -1,11 +1,13 @@
 import React from 'react';
 import Head from "next/head";
+import Script from 'next/script';
 const Wrapper = (props) => {
     return (
         <div>
-            <Head>
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
-            </Head>
+            <Script
+                src="https://js.stripe.com/v3/"
+                strategy="afterInteractive"
+            />
             <div className="container">
                 {props.children}
             </div>

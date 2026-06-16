@@ -1,5 +1,13 @@
-# Ignore Docker database storage
-laravel-admin/.dbdata/
 
 # Ignore local environment files
 laravel-admin/.env
+emails/.env
+
+# Database data
+.dbdata/
+
+# Environment secrets
+.env
+
+# Old docker files
+laravel-admin/docker-compose.yaml.old

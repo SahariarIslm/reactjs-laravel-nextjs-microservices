@@ -1,0 +1,212 @@
+# =================================================================
+#  Root docker-compose.yaml
+#  Project structure expected at root:
+#
+#  LARAVEL/
+#  ├── docker-compose.yaml        ← this file
+#  ├── .env                       ← your secrets (copy from .env.example)
+#  ├── .dbdata/                   ← moved from laravel-admin/.dbdata
+#  ├── laravel-admin/
+#  │   └── Dockerfile
+#  ├── emails/
+#  │   └── Dockerfile
+#  ├── react-admin/
+#  ├── react-influencer/
+#  └── next-checkout/
+#
+#  Run:  docker compose up --build -d
+#  Logs: docker compose logs -f
+# =================================================================
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+
+services:
+
+  # ───────────────────────────────────────────────────────────────
+  #  LARAVEL ADMIN  (REST API + Job dispatcher)
+  #  http://localhost:8000
+  # ───────────────────────────────────────────────────────────────
+  laravel-admin:
+    build:
+      context: ./laravel-admin      # uses laravel-admin/Dockerfile
+    container_name: laravel-admin
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./laravel-admin:/app        # live code sync in development
+    environment:
+      APP_ENV: local
+      APP_KEY: ${ADMIN_APP_KEY}
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: influencer
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      QUEUE_CONNECTION: rabbitmq
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT:-5671}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+      RABBITMQ_QUEUE: email.queue
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app-network
+
+  # ───────────────────────────────────────────────────────────────
+  #  EMAILS MICROSERVICE  (RabbitMQ queue consumer)
+  #  No port needed — only listens to the queue
+  # ───────────────────────────────────────────────────────────────
+  emails:
+    build:
+      context: ./emails             # uses emails/Dockerfile
+    container_name: emails-service
+    restart: unless-stopped
+    volumes:
+      - ./emails:/app               # live code sync in development
+    environment:
+      APP_ENV: local
+      APP_KEY: ${EMAIL_APP_KEY}
+      QUEUE_CONNECTION: rabbitmq
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT:-5671}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+      RABBITMQ_QUEUE: email.queue
+      MAIL_MAILER: ${MAIL_MAILER:-mailpit}
+      MAIL_HOST: ${MAIL_HOST:-mailpit}
+      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_USERNAME: ${MAIL_USERNAME:-null}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-null}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-hello@example.com}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-"My App"}
+    depends_on:
+      - mailpit
+    networks:
+      - app-network
+
+  # ───────────────────────────────────────────────────────────────
+  #  REACT-ADMIN FRONTEND
+  #  http://localhost:3000
+  # ───────────────────────────────────────────────────────────────
+  react-admin:
+    image: antoniopapa1991/admin-frontend
+    container_name: react-admin
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - ./laravel-admin/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - laravel-admin
+    networks:
+      - app-network
+
+  # ───────────────────────────────────────────────────────────────
+  #  REACT-INFLUENCER FRONTEND
+  #  http://localhost:3001
+  # ───────────────────────────────────────────────────────────────
+  react-influencer:
+    build:
+      context: ./react-influencer
+    container_name: react-influencer
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+    depends_on:
+      - laravel-admin
+    networks:
+      - app-network
+
+  # ───────────────────────────────────────────────────────────────
+  #  NEXT-CHECKOUT FRONTEND
+  #  http://localhost:3002
+  # ───────────────────────────────────────────────────────────────
+  next-checkout:
+    build:
+      context: ./next-checkout
+    container_name: next-checkout
+    restart: unless-stopped
+    ports:
+      - "3002:3000"
+    depends_on:
+      - laravel-admin
+    networks:
+      - app-network
+
+  # ───────────────────────────────────────────────────────────────
+  #  MYSQL DATABASE
+  #  .dbdata folder is now at project ROOT (moved from laravel-admin)
+  #  phpMyAdmin: http://localhost:8080
+  # ───────────────────────────────────────────────────────────────
+  db:
+    image: mysql:9.7.0
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: influencer
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./.dbdata:/var/lib/mysql    # ← points to root .dbdata folder
+    ports:
+      - "33066:3306"
+    networks:
+      - app-network
+
+  # ───────────────────────────────────────────────────────────────
+  #  PHPMYADMIN
+  #  http://localhost:8080
+  # ───────────────────────────────────────────────────────────────
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: admin-pma
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # ───────────────────────────────────────────────────────────────
+  #  REDIS
+  # ───────────────────────────────────────────────────────────────
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+  # ───────────────────────────────────────────────────────────────
+  #  MAILPIT  (catches all outgoing emails in development)
+  #  UI:   http://localhost:8025
+  #  SMTP: mailpit:1025  (used by emails microservice)
+  # ───────────────────────────────────────────────────────────────
+  mailpit:
+    image: axllent/mailpit
+    container_name: mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - app-network

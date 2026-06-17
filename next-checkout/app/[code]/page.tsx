@@ -5,7 +5,7 @@ import { useEffect,useState } from "react";
 import axios from "axios";
 import constants from "@/constants";
 
-declare var Stripe;
+declare var Stripe: any;
 
 const Home = () => {
   const router = useRouter();

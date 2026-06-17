@@ -4,8 +4,8 @@ const dev = {
 }
 
 const prod = {
-    BASE_URL: '',
-    CHECKOUT_URL: ''
+    BASE_URL: 'http://localhost:8000/api/influencer',
+    CHECKOUT_URL: 'http://localhost:3002'
 }
 
 export default {

@@ -30,7 +30,7 @@ class Login extends Component{
         e.preventDefault();
 
         try {
-            const response = await axios.post('/login', {
+            const response = await axios.post('login', {
                 email: this.email,
                 password: this.password,
                 scope: 'influencer'
